@@ -1,4 +1,4 @@
-FROM traefik:v3.0
+FROM traefik:v3.6
 
 # This will be set by the GitHub action to the folder containing this component.
 ARG FOLDER=/app
