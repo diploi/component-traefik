@@ -1,0 +1,16 @@
+# Default catch-all router for Traefik
+# This router matches all requests and shows the Traefik dashboard
+# Remove or modify this file once you have configured your own routes
+# 
+# Note: The dashboard shows Traefik is running and provides information about
+# configured routes. Once you add your own routes, they will take precedence
+# due to the low priority (1) of this catch-all router.
+
+http:
+  routers:
+    default-catchall:
+      rule: "PathPrefix(`/`)"
+      service: api@internal
+      entryPoints:
+        - web
+      priority: 1  # Low priority so user-defined routes take precedence
