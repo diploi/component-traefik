@@ -14,13 +14,11 @@ RUN mkdir -p /etc/traefik/dynamic
 # If FOLDER=/app/myfolder, copy everything from that folder to /etc/traefik
 RUN \
   if [ "$FOLDER" = "/app" ]; then \
-    shopt -s dotglob && \
-    cp -r /tmp/build-context/* /etc/traefik/ ; \
+    find /tmp/build-context -mindepth 1 -maxdepth 1 -exec cp -r {} /etc/traefik/ \; ; \
   else \
     SOURCE_DIR="/tmp/build-context${FOLDER#/app}"; \
     if [ -d "$SOURCE_DIR" ]; then \
-      shopt -s dotglob && \
-      cp -r "$SOURCE_DIR"/* /etc/traefik/ ; \
+      find "$SOURCE_DIR" -mindepth 1 -maxdepth 1 -exec cp -r {} /etc/traefik/ \; ; \
     fi ; \
   fi && \
   rm -rf /tmp/build-context
