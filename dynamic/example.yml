@@ -14,7 +14,7 @@
 #        - auth-middleware
 #
 #  services:
-#    my-service:#
+#    my-service:
 #      loadBalancer:
 #        servers:
 #          - url: "http://app.bun:3000" # Point this to diploi internal address
