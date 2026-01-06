@@ -48,5 +48,5 @@ spec:
         {{- if hasKey .Values.storage "code" }}
         - name: app-mount
           hostPath:
-            path: {{ .Values.storage.config.hostPath }}
+            path: {{ .Values.storage.code.hostPath }}
         {{- end }}
