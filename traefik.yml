@@ -1,9 +1,10 @@
 # Traefik static configuration file
 # This file contains the base configuration for Traefik
+# If you update this, you need to restart the Traefik pod for the changes to take effect
 
 # API and Dashboard configuration
 api:
-  dashboard: true
+  dashboard: false
   insecure: true
 
 # Entrypoints configuration
@@ -25,7 +26,9 @@ log:
   format: json
 
 # Access log configuration
-accessLog: {}
+# Access logs are written to stdout by default
+accessLog:
+  format: json
 
 # Global configuration
 global:

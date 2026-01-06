@@ -1,26 +1,26 @@
-# Example dynamic configuration file
-# This file demonstrates how to configure routers, services, and middlewares
-# Uncomment and modify as needed for your use case
+# Example router file, this forwards all traffic to a bun component
+# Also shows how to add basic authentication
+# Changes to this file will take effect without restarting the Traefik pod
 
-# http:
-#   routers:
-#     example-router:
-#       rule: "Host(`example.com`)"
-#       service: example-service
-#       entryPoints:
-#         - websecure
-#       tls:
-#         certResolver: letsencrypt
-# 
-#   services:
-#     example-service:
-#       loadBalancer:
-#         servers:
-#           - url: "http://example-backend:8080"
-# 
-#   middlewares:
-#     example-auth:
-#       basicAuth:
-#         users:
-#           - "user:hashedpassword"
-
+#http:
+#  routers:
+#    default-catchall:
+#      rule: "PathPrefix(`/`)"
+#      service: my-service
+#      entryPoints:
+#        - web
+#      priority: 1  # Low priority so user-defined routes take precedence
+#      middlewares:
+#        - auth-middleware
+#
+#  services:
+#    my-service:#
+#      loadBalancer:
+#        servers:
+#          - url: "http://app.bun:3000" # Point this to diploi internal address
+#
+#  middlewares:
+#    auth-middleware:
+#      basicAuth:
+#        users:
+#          - "admin:$apr1$r2BZlKSn$m2GtTfsONZ6lyHnAW0wrn0" # Password is "admin"

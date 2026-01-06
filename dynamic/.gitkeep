@@ -1,4 +1,0 @@
-# Dynamic configuration directory
-# Place your Traefik dynamic configuration files here (routers.yml, middlewares.yml, etc.)
-# These files will be automatically loaded by Traefik
-
