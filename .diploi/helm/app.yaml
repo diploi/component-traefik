@@ -42,11 +42,11 @@ spec:
           volumeMounts:
             {{- if hasKey .Values.storage "code" }}
             - name: app-mount
-              mountPath: /etc/traefik/config
+              mountPath: /etc/traefik 
             {{- end }}
       volumes:
         {{- if hasKey .Values.storage "code" }}
         - name: app-mount
           hostPath:
-            path: {{ .Values.storage.code.hostPath }}
+            path: {{ if .Values.folder }}{{ .Values.storage.code.hostPath }}/{{ .Values.folder }}{{ else }}{{ .Values.storage.code.hostPath }}{{ end }}
         {{- end }}
