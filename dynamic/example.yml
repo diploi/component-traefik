@@ -1,0 +1,26 @@
+# Example dynamic configuration file
+# This file demonstrates how to configure routers, services, and middlewares
+# Uncomment and modify as needed for your use case
+
+# http:
+#   routers:
+#     example-router:
+#       rule: "Host(`example.com`)"
+#       service: example-service
+#       entryPoints:
+#         - websecure
+#       tls:
+#         certResolver: letsencrypt
+# 
+#   services:
+#     example-service:
+#       loadBalancer:
+#         servers:
+#           - url: "http://example-backend:8080"
+# 
+#   middlewares:
+#     example-auth:
+#       basicAuth:
+#         users:
+#           - "user:hashedpassword"
+

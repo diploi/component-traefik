@@ -1,17 +1,19 @@
 <img alt="icon" src=".diploi/icon.svg" width="32">
 
-# Astro Component for Diploi
+# Traefik Component for Diploi
 
-[![launch with diploi badge](https://diploi.com/launch.svg)](https://diploi.com/component/astro)
-[![component on diploi badge](https://diploi.com/component.svg)](https://diploi.com/component/astro)
-[![latest tag badge](https://badgen.net/github/tag/diploi/component-astro)](https://diploi.com/component/astro)
+### NOTE! Experimental, not yet released
+
+[![launch with diploi badge](https://diploi.com/launch.svg)](https://diploi.com/component/traefik)
+[![component on diploi badge](https://diploi.com/component.svg)](https://diploi.com/component/traefik)
+[![latest tag badge](https://badgen.net/github/tag/diploi/component-traefik)](https://diploi.com/component/traefik)
 
 Launch a trial, no registration needed
-https://diploi.com/component/astro
+https://diploi.com/component/traefik
 
-Uses the official [node](https://hub.docker.com/_/node) Docker image.
+Uses the official [Traefik](https://hub.docker.com/_/traefik) Docker image.
 
-Has the [@astrojs/ node](https://docs.astro.build/en/guides/integrations-guide/node/) adapter preconfigured.
+This component provides Traefik as a reverse proxy and load balancer with file-based configuration support.
 
 ## Operation
 
@@ -19,23 +21,39 @@ Has the [@astrojs/ node](https://docs.astro.build/en/guides/integrations-guide/n
 
 1. **Sign up** at `https://console.diploi.com/` using your GitHub account.
 2. In your dashboard, click **Create Project +**
-3. Under **Pick Components**, choose **Astro**  
- If you want to expand your Astro website with other tools, like a backend framework, here you can add them.
+3. Under **Pick Components**, choose **Traefik**  
+   If you want to expand your Traefik setup with other tools, like databases or monitoring, here you can add them.
 4. In **Pick Add-ons**, select any databases or tools supported on Diploi.
 5. In **Repository**, choose **Create Repository** which will generate a new GitHub repo for you.
 6. Click **Launch Stack**
 
-Prefer the full guide? Check https://diploi.com/blog/hosting_astro_apps
+### Configuration
+
+The base Traefik configuration is loaded from `traefik.yml` in the root of the component. This file contains:
+
+- Entry point is HTTP on port 80 (Diploi will take care of https)
+- API and Dashboard configuration (port 8080) (NOTE! Disabled)
+- File provider for dynamic configuration
+- Kubernetes provider for automatic service discovery
+- Logging configuration
+
+#### Customizing Configuration
+
+You can customize the Traefik configuration by:
+
+1. **Editing `traefik.yml`**: Modify the base static configuration file
+2. **Adding dynamic configuration**: Place YAML files in the `dynamic/` directory for routers, middlewares, and services
 
 ### Development
 
-Will run `npm install` when component is first initialized, and `npm run dev` when deployment is started.
+Traefik runs with the same configuration in both development and production environments. The configuration file is mounted as a ConfigMap in Kubernetes.
 
 ### Production
 
-Will build a production ready image. Image runs `npm install` & `npm build` when being created. Once the image runs, `npm start` is called.
+Traefik runs as a Deployment in production with the configuration loaded from the `traefik.yml` file. The dashboard is accessible on port 8080 (DISABLED FOR NOW).
 
-## Link
+## Links
 
-- [Adding Astro to a project](https://docs.diploi.com/building/components/astro)
-- [Astro docs](https://docs.astro.build/en/getting-started/)
+- [Adding Traefik to a project](https://docs.diploi.com/building/components/traefik)
+- [Traefik documentation](https://doc.traefik.io/traefik/)
+- [Traefik file provider](https://doc.traefik.io/traefik/providers/file/)

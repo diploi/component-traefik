@@ -1,22 +1,22 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: traefik-dashboard-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   tls:
     - hosts:
-        - {{ .Values.hosts.app }}
+        - {{ .Values.hosts.traefik }}
       secretName: tls-secret
   rules:
-    - host: {{ .Values.hosts.app }}
+    - host: {{ .Values.hosts.traefik }}
       http:
         paths:
           - path: '/'
             pathType: Prefix
             backend:
               service:
-                name: app
+                name: traefik
                 port:
-                  number: 4321
+                  number: 8080

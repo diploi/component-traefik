@@ -1,47 +1,32 @@
-FROM node:22-alpine AS base
+FROM traefik:v3.0
 
 # This will be set by the GitHub action to the folder containing this component.
 ARG FOLDER=/app
 
-# Install dependencies only when needed
-FROM base AS deps
+# Copy everything to a staging location
+COPY . /tmp/build-context
 
-COPY . /app
-WORKDIR ${FOLDER}
+# Create directory for Traefik configuration
+RUN mkdir -p /etc/traefik/dynamic
 
-# Install dependencies based on the preferred package manager
+# Conditionally copy everything based on FOLDER variable
+# If FOLDER=/app, copy everything from root to /etc/traefik
+# If FOLDER=/app/myfolder, copy everything from that folder to /etc/traefik
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+  if [ "$FOLDER" = "/app" ]; then \
+    shopt -s dotglob && \
+    cp -r /tmp/build-context/* /etc/traefik/ ; \
+  else \
+    SOURCE_DIR="/tmp/build-context${FOLDER#/app}"; \
+    if [ -d "$SOURCE_DIR" ]; then \
+      shopt -s dotglob && \
+      cp -r "$SOURCE_DIR"/* /etc/traefik/ ; \
+    fi ; \
+  fi && \
+  rm -rf /tmp/build-context
 
-# Rebuild the source code only when needed
-FROM base AS builder
-COPY . /app
-WORKDIR ${FOLDER}
-COPY --from=deps ${FOLDER}/node_modules ./node_modules
+# Expose Traefik ports
+EXPOSE 80
 
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
-# Production image, copy all the files and run "npm start"
-FROM base AS runner
-
-COPY --from=builder --chown=1000:1000 /app /app
-WORKDIR ${FOLDER}
-
-ENV NODE_ENV=production
-
-USER 1000:1000
-
-EXPOSE 4321
-ENV PORT=4321
-ENV HOST="0.0.0.0"
-
-CMD ["npm", "start"]
+# Run Traefik with the configuration file
+CMD ["traefik", "--configfile=/etc/traefik/traefik.yml"]

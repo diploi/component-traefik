@@ -25,51 +25,28 @@ spec:
   template:
     metadata:
       labels:
-        app: app
+        app: traefik
     spec:
       terminationGracePeriodSeconds: 10
       imagePullSecrets:
         - name: diploi-pull-secret
-      {{- if eq .Values.stage "development"}}
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-      initContainers:
-        - name: install-dependencies
-          image: {{ .Values.images.app }}
-          imagePullPolicy: Always
-          command: ['npm', 'install']
-          workingDir: /app{{ .Values.folder }}
-          volumeMounts:
-            - name: app-mount
-              mountPath: /app
-      {{- end }}
       containers:
         - name: app
           image: {{ .Values.images.app }}
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
-          {{- if eq .Values.stage "development" }}
-          workingDir: /app{{ .Values.folder }}
-          {{- end }}
-          env:
-            {{- range .Values.env }}
-            - name: {{ .identifier }}
-              value: {{ .value | quote }}
-            {{- end }}
-            - name: APP_PUBLIC_URL
-              value: {{ .Values.hosts.app }}
-            - name: STAGE
-              value: {{ .Values.stage }}
+            - name: web
+              containerPort: 80
+          args:
+            - --configfile=/etc/traefik/traefik.yml
           volumeMounts:
             {{- if hasKey .Values.storage "code" }}
             - name: app-mount
-              mountPath: /app
+              mountPath: /etc/traefik/config
             {{- end }}
       volumes:
         {{- if hasKey .Values.storage "code" }}
         - name: app-mount
           hostPath:
-            path: {{ .Values.storage.code.hostPath }}
+            path: {{ .Values.storage.config.hostPath }}
         {{- end }}

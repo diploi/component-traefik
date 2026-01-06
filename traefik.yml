@@ -1,0 +1,38 @@
+# Traefik static configuration file
+# This file contains the base configuration for Traefik
+
+# API and Dashboard configuration
+api:
+  dashboard: false
+  insecure: true
+
+# Entrypoints configuration
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+# Providers configuration
+providers:
+  # File provider for dynamic configuration
+  file:
+    directory: "/etc/traefik/dynamic"
+    watch: true
+
+# Logging configuration
+log:
+  level: INFO
+  format: json
+
+# Access log configuration
+accessLog: {}
+
+# Global configuration
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+

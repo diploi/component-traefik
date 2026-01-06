@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+data:
+  traefik.yml: |
+    # Traefik static configuration file
+    # This file contains the base configuration for Traefik
+
+    # API and Dashboard configuration
+    api:
+      dashboard: true
+      insecure: true
+
+    # Entrypoints configuration
+    entryPoints:
+      web:
+        address: ":80"
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+      websecure:
+        address: ":443"
+
+    # Providers configuration
+    providers:
+      # File provider for dynamic configuration
+      file:
+        directory: "/etc/traefik/dynamic"
+        watch: true
+      # Kubernetes provider for automatic service discovery
+      kubernetes:
+        endpoint: ""
+        token: ""
+        certAuthFilePath: ""
+        namespaces: []
+        labelSelector: ""
+
+    # Logging configuration
+    log:
+      level: INFO
+      format: json
+
+    # Access log configuration
+    accessLog: {}
+
+    # Global configuration
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-dynamic
+data:
+  # Dynamic configuration files can be added here
+  # Example: routers.yml, middlewares.yml, etc.
+
