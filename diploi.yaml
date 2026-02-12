@@ -7,16 +7,13 @@ contexts:
   - name: app
     identifier: app
 
+supportsAdditionalHosts: { serviceName: 'app' }
+
 hosts:
   - name: Traefik
     identifier: app
-    urlFormat: '[label].[default-domain]'
+    port: 80
 
 images:
   - identifier: app
     prebuildImage: ghcr.io/diploi/component-traefik:[tag]
-
-logs:
-  - name: Traefik Log
-    type: log
-    labelSelector: app=traefik
